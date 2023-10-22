@@ -212,8 +212,8 @@ class BinaryTree:
         for e in l:
             self.insertion(BinaryTreeNode(e))
 
-    #find minimum node of given root node to start and return it
-    def find_min(self, node:BinaryTreeNode):
+    # find minimum node of given root node to start and return it
+    def find_min(self, node: BinaryTreeNode):
         if not node:
             return None
 
@@ -222,7 +222,7 @@ class BinaryTree:
             curr = curr.get_left()
         return curr
 
-    def find_max(self, node:BinaryTreeNode):
+    def find_max(self, node: BinaryTreeNode):
         if not node:
             return None
 
@@ -244,7 +244,7 @@ class BinaryTree:
         else:
             return self.find(curr.get_right(), val)
 
-    def find_iter(self,root: BinaryTreeNode, val):
+    def find_iter(self, root: BinaryTreeNode, val):
         if not root:
             return False
 
@@ -285,13 +285,12 @@ class BinaryTree:
         self.delete_tree(node.get_left())
         self.delete_tree(node.get_right())
         del node
-        self.size -=1
+        self.size -= 1
 
     def height(self, node: BinaryTreeNode):
         if node is None:
             return 0
         return max(self.height(node.get_right()), self.height(node.get_left())) + 1
-
 
     # calculate the successor of one node in infixe traversing  and return this node
     def successor(self, node: BinaryTreeNode):
@@ -318,7 +317,7 @@ class BinaryTree:
 
         return pre_node
 
-    def delete_element(self, node:BinaryTreeNode):
+    def delete_element(self, node: BinaryTreeNode):
 
         if not node:
             return
@@ -331,12 +330,12 @@ class BinaryTree:
             else:
                 pre_node.set_left(None)
 
-            self.delete_tree(node) #delete a leaf node
+            self.delete_tree(node)  # delete a leaf node
 
         elif node.get_left() and not node.get_right():
             max_node = self.find_max(node.get_left())
-            node.set_data(max_node.get_data() ) #copy satelite data
-            self.delete_element(max_node) # recursive call delete_element at that node
+            node.set_data(max_node.get_data())  # copy satelite data
+            self.delete_element(max_node)  # recursive call delete_element at that node
 
         else:
             min_node = self.find_min(node.get_right())
@@ -344,7 +343,7 @@ class BinaryTree:
             node.set_data(min_node.get_data())
             self.delete_element(min_node)
 
-    def number_of_leaves_node(self, root :BinaryTreeNode):
+    def number_of_leaves_node(self, root: BinaryTreeNode):
         if not root:
             return 0
 
@@ -356,7 +355,7 @@ class BinaryTree:
             curr_node: BinaryTreeNode = queue.dequeue()
 
             if curr_node.get_left() is None and curr_node.get_right() is None:
-                count +=1
+                count += 1
 
             if curr_node.get_left():
                 queue.enqueue(curr_node.get_left())
@@ -376,7 +375,7 @@ class BinaryTree:
         while not queue.is_empty():
             curr_node: BinaryTreeNode = queue.dequeue()
 
-            if curr_node.get_left() and curr_node.get_right() :
+            if curr_node.get_left() and curr_node.get_right():
                 count += 1
 
             if curr_node.get_left():
@@ -386,8 +385,40 @@ class BinaryTree:
 
         return count
 
-if __name__ == "__main__":
+    def number_of_half_node(self, root: BinaryTreeNode):
+        if not root:
+            return 0
 
+            # using queue to enfile element at level l+1 when we  visiting element at level l
+        queue = Queue()
+        queue.enqueue(root)
+        count = 0
+        while not queue.is_empty():
+            curr_node: BinaryTreeNode = queue.dequeue()
+
+            if (curr_node.get_left() and not curr_node.get_right()) or (
+                    curr_node.get_right() and not curr_node.get_left()):
+                count += 1
+
+            if curr_node.get_left():
+                queue.enqueue(curr_node.get_left())
+            if curr_node.get_right():
+                queue.enqueue(curr_node.get_right())
+
+        return count
+
+    def structural_identical(self, root1: BinaryTreeNode, root2: BinaryTreeNode):
+        if root1 is None or  root2 is None :
+            return False
+        if root1.get_data() != root2.get_data():
+            return False
+
+        left = self.structural_identical(root1.get_left(), root2.get_left())
+        right = self.structural_identical(root1.get_right(), root2.get_right())
+        return left and right
+
+
+if __name__ == "__main__":
     tree = BinaryTree()
     print("empty tree : ", tree.is_empty())
 
@@ -404,21 +435,18 @@ if __name__ == "__main__":
     print(f"succes root : {tree.successor(tree.root).get_data()}")
 
     l = []
-    tree.infix(tree.root,l)
+    tree.infix(tree.root, l)
     print(l)
 
     max_node = tree.find_max(tree.root)
-    print(f"pred max node : { tree.predecessor(max_node).get_data()}")
+    print(f"pred max node : {tree.predecessor(max_node).get_data()}")
 
     tree.delete_element(max_node)
     print("size : %d" % tree.get_size())
 
-    l =[]
+    l = []
     tree.infix(tree.root, l)
     print(l)
     print(f"Number of full nodes : {tree.number_of_full_node(tree.root)}")
     print(f"Number of leaves nodes : {tree.number_of_leaves_node(tree.root)}")
-
-
-
-
+    print(f"identique : {tree.structural_identical(root1=tree.root, root2=tree.root)}")
