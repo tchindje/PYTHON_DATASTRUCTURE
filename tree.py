@@ -292,6 +292,24 @@ class BinaryTree:
             return 0
         return max(self.height(node.get_right()), self.height(node.get_left())) + 1
 
+    def diameter(self, root):
+        """
+           The diameter of a tree (sometimes called the width)
+            is the number of nodes on the longest path between two leaves in the tree.
+           :param node:
+           :return: lenght of diameter on tree from giving node
+        """
+
+        if (root == None):
+            return 0
+
+        lHeight = self.height(root.left)
+        rHeight = self.height(root.right)
+        lDiameter = self.diameter(root.left)
+        rDiarmeter = self.diameter(root.right)
+
+        return max(lHeight + rHeight + 1, max(lDiameter, rDiarmeter))
+
     # calculate the successor of one node in infixe traversing  and return this node
     def successor(self, node: BinaryTreeNode):
         if node.get_right():
@@ -407,46 +425,69 @@ class BinaryTree:
 
         return count
 
-    def structural_identical(self, root1: BinaryTreeNode, root2: BinaryTreeNode):
-        if root1 is None or  root2 is None :
-            return False
-        if root1.get_data() != root2.get_data():
-            return False
+    def sum_at_each_level(self, node: BinaryTreeNode, result: dict):
 
-        left = self.structural_identical(root1.get_left(), root2.get_left())
-        right = self.structural_identical(root1.get_right(), root2.get_right())
-        return left and right
+        if not node:
+            return
+
+            # using queue to enfile element at level l+1 when we  visiting element at level l
+        queue = Queue()
+        queue.enqueue(node)
+        queue.enqueue(None)  # indicate and of current level
+
+        level = max_level = cur_sum = max_sum = 0
+        while not queue.is_empty():
+            curr_node: BinaryTreeNode = queue.dequeue()
+
+            if curr_node is None:
+                result[level] = cur_sum
+                if cur_sum > max_sum:
+                    max_sum = cur_sum
+                    max_level = level
+
+                cur_sum = 0  # renitialise the current sum at level
+                if not queue.is_empty():
+                    queue.enqueue(None)
+                    level += 1
+
+            else:
+                cur_sum += curr_node.get_data()
+                if curr_node.get_left():
+                    queue.enqueue(curr_node.get_left())
+                if curr_node.get_right():
+                    queue.enqueue(curr_node.get_right())
+        return max_level, max_sum
+
+    # def structural_identical(self, root1: BinaryTreeNode, root2: BinaryTreeNode):
+    #     if root1 is None or  root2 is None :
+    #         return False
+    #     if root1.get_data() != root2.get_data():
+    #         return False
+    #
+    #     left = self.structural_identical(root1.get_left(), root2.get_left())
+    #     right = self.structural_identical(root1.get_right(), root2.get_right())
+    #     return left and right
 
 
 if __name__ == "__main__":
     tree = BinaryTree()
+
     print("empty tree : ", tree.is_empty())
 
     data = [6, 3, 8, 7, 9]
 
     tree.insertion_from_list(data)
 
-    print("size : %d" % tree.get_size())
-
-    print(f"max : {tree.find_max(tree.root).get_data()} ")
-    print(f"min : {tree.find_min(tree.root).get_data()} ")
-    print(f"result of search : {tree.find_iter(tree.root, val=9)} ")
-    print(f"height : {tree.height(tree.root)} ")
-    print(f"succes root : {tree.successor(tree.root).get_data()}")
-
     l = []
     tree.infix(tree.root, l)
     print(l)
 
-    max_node = tree.find_max(tree.root)
-    print(f"pred max node : {tree.predecessor(max_node).get_data()}")
-
-    tree.delete_element(max_node)
     print("size : %d" % tree.get_size())
 
-    l = []
-    tree.infix(tree.root, l)
-    print(l)
-    print(f"Number of full nodes : {tree.number_of_full_node(tree.root)}")
-    print(f"Number of leaves nodes : {tree.number_of_leaves_node(tree.root)}")
-    print(f"identique : {tree.structural_identical(root1=tree.root, root2=tree.root)}")
+    result = {}
+    tree.sum_at_each_level(tree.root, result)
+    print(result)
+
+
+
+
