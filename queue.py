@@ -1,8 +1,8 @@
 class Queue:
-    def __init__(self, list_data = None):
+    def __init__(self, list_data=None):
         self.tab = []
 
-        if list_data is not None :
+        if list_data is not None:
             for e in list_data:
                 self.enqueue(e)
 
@@ -29,8 +29,8 @@ class Queue:
 class Node:
     def __init__(self, data=None):
         self.data = data
-        self.next : Node = None
-        self.prev : Node = None
+        self.next: Node = None
+        self.prev: Node = None
 
     def set_data(self, data):
         self.data = data
@@ -39,7 +39,7 @@ class Node:
         return self.data
 
     def get_next(self):
-        return  self.next
+        return self.next
 
     def set_next(self, node):
         self.next = node
@@ -52,9 +52,9 @@ class Node:
 
 
 class QueueLinkedList:
-    def __init__(self, list_data = None):
+    def __init__(self, list_data=None):
         self.rear: Node = None
-        self.front : Node = None
+        self.front: Node = None
         self.length = 0
 
         if list_data is not None:
@@ -65,20 +65,20 @@ class QueueLinkedList:
         return self.length
 
     def is_empty(self) -> bool:
-        return  self.size() <= 0
+        return self.size() <= 0
 
     def enqueue(self, data):
         new_node = Node(data)
 
         if self.is_empty():
             self.rear = new_node
-            self.front  = new_node
+            self.front = new_node
         else:
             new_node.set_next(self.rear)
             self.rear.set_previous(new_node)
             self.rear = new_node
 
-        self.length +=1
+        self.length += 1
 
     def frontt(self):
         if self.is_empty():
@@ -89,17 +89,17 @@ class QueueLinkedList:
         if self.is_empty():
             raise Exception("Empty queue")
 
-        if self.length == 1: # just one element in queue
+        if self.length == 1:  # just one element in queue
             data = self.front.get_data()
             self.rear = None
-            self.front= None
+            self.front = None
             self.length -= 1
-            return  data
+            return data
 
-        #save data front before update
+        # save data front before update
         data = self.front.get_data()
 
-        #update front pointer
+        # update front pointer
         self.front = self.front.get_previous()
         self.front.set_next(None)
         self.length -= 1
@@ -114,20 +114,18 @@ class QueueLinkedList:
             while cur is not None:
                 result.append(cur.get_data())
                 cur = cur.get_next()
-            return  result
+            return result
 
 
 if __name__ == "__main__":
-    queue = QueueLinkedList([9,5])
+    queue = QueueLinkedList([9, 5])
     # queue.enqueue(3)
     # queue.enqueue(4)
     print(queue)
     print(queue.is_empty())
     print(queue.frontt())
-    print( "size: %d" % queue.size())
+    print("size: %d" % queue.size())
     print(queue.display())
     print(queue.dequeue())
     print(queue.display())
-    print( "size: %d" % queue.size())
-
-
+    print("size: %d" % queue.size())
