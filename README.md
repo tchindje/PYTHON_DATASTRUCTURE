@@ -1,3 +1,3 @@
 # PYTHON_DATASTRUCTURE
 
-## book : Data Structures And Algorithmic  in python
+## Data Structures And Algorithmic  in python
